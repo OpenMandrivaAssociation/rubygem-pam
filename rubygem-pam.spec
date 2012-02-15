@@ -14,6 +14,7 @@ Patch0:		pam-1.5.3-ruby1.9.patch
 Patch1:		pam-1.5.3-add-missing-tags-to-metadata.patch
 BuildRequires:	rubygems 
 BuildRequires:	ruby-devel
+BuildRequires:	pam-devel
 %rename		ruby-pam
 
 %description
