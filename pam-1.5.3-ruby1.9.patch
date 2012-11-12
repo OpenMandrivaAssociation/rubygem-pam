@@ -1,0 +1,91 @@
+--- rubygem-pam-1.5.3/ext/_pam.h~	2012-02-15 21:28:07.048386789 +0100
++++ rubygem-pam-1.5.3/ext/_pam.h	2012-02-15 21:29:10.041452011 +0100
+@@ -6,7 +6,7 @@
+ #define RB_PAM_H 1
+ 
+ #include <ruby.h>
+-#include <version.h>
++#include <ruby/version.h>
+ #include <security/pam_appl.h>
+ #include <security/pam_modules.h>
+ 
+--- rubygem-pam-1.5.3/ext/pam_handle.c~	2012-02-15 21:34:59.982814840 +0100
++++ rubygem-pam-1.5.3/ext/pam_handle.c	2012-02-15 21:35:02.198817138 +0100
+@@ -58,7 +58,7 @@ rb_pam_inner_conv(int num_msg,
+       VALUE r_resp = rb_struct_getmember(rrep,rb_intern("resp"));
+       VALUE r_retcode = rb_struct_getmember(rrep,rb_intern("resp_retcode"));
+ 
+-      reply[i].resp = ((r_resp != Qnil) ? strdup(STR2CSTR(r_resp)) : NULL);
++      reply[i].resp = ((r_resp != Qnil) ? strdup(StringValuePtr(r_resp)) : NULL);
+       reply[i].resp_retcode = ((r_retcode != Qnil) ? NUM2INT(r_retcode) : 0);
+     }
+     else{
+@@ -148,13 +148,13 @@ rb_pam_handle_initialize(int argc, VALUE
+ 
+   switch( rb_scan_args(argc, argv, "31", &service, &user, &conv, &data) ){
+   case 3:
+-    c_service = STR2CSTR(service);
+-    c_user = STR2CSTR(user);
++    c_service = StringValuePtr(service);
++    c_user = StringValuePtr(user);
+     CREATE_PAM_CONV2(c_conv,conv,Qnil);
+     break;
+   case 4:
+-    c_service = STR2CSTR(service);
+-    c_user = STR2CSTR(user);
++    c_service = StringValuePtr(service);
++    c_user = StringValuePtr(user);
+     CREATE_PAM_CONV2(c_conv,conv,data);
+     break;
+   default:
+@@ -237,10 +237,10 @@ rb_pam_handle_conv(VALUE self, VALUE ary
+   if( status != PAM_SUCCESS || !conv )
+     rb_pam_raise(status, "rb_pam_handle_conv");
+ 
+-  msg_len = RARRAY(ary)->len;
++  msg_len = RARRAY_LEN(ary);
+   msg = (struct pam_message **)ALLOCA_N(struct pam_message *, msg_len);
+   for( i=0; i<msg_len; i++ ){
+-    VALUE elem = RARRAY(ary)->ptr[i];
++    VALUE elem = RARRAY_PTR(ary)[i];
+     VALUE m_style, m_msg;
+     m_style = rb_struct_getmember(elem, rb_intern("msg_style"));
+     m_msg = rb_struct_getmember(elem, rb_intern("msg"));
+@@ -250,8 +250,8 @@ rb_pam_handle_conv(VALUE self, VALUE ary
+       msg[i]->msg = NULL;
+     }
+     else{
+-      msg[i]->msg = (char*)ALLOCA_N(char, RSTRING(m_msg)->len + 1);
+-      strcpy((char*)(msg[i]->msg), STR2CSTR(m_msg));
++      msg[i]->msg = (char*)ALLOCA_N(char, RSTRING_LEN(m_msg) + 1);
++      strcpy((char*)(msg[i]->msg), StringValuePtr(m_msg));
+     };
+   };
+ 
+@@ -546,7 +546,7 @@ rb_pam_handle_set_item(VALUE self, VALUE
+   case PAM_RHOST:
+   case PAM_RUSER:
+   case PAM_USER_PROMPT:
+-    c_item = (void*)STR2CSTR(item);
++    c_item = (void*)StringValuePtr(item);
+     break;
+   case PAM_CONV:
+     {
+@@ -627,7 +627,7 @@ rb_pam_handle_putenv(VALUE self, VALUE v
+ 
+   Data_Get_Struct(self,struct rb_pam_struct,pam);
+   pam->status = -1;
+-  return INT2NUM(pam_putenv(pam->ptr,STR2CSTR(val)));
++  return INT2NUM(pam_putenv(pam->ptr,StringValuePtr(val)));
+ #else
+   rb_notimplemented();
+ #endif
+@@ -642,7 +642,7 @@ rb_pam_handle_getenv(VALUE self, VALUE v
+ 
+   Data_Get_Struct(self,struct rb_pam_struct,pam);
+   pam->status = -1;
+-  return( (str = pam_getenv(pam->ptr,STR2CSTR(val))) ? rb_str_new2(str) : Qnil);
++  return( (str = pam_getenv(pam->ptr,StringValuePtr(val))) ? rb_str_new2(str) : Qnil);
+ #else
+   rb_notimplemented();
+ #endif

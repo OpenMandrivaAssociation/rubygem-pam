@@ -1,0 +1,26 @@
+--- rubygem-pam-1.5.3/metadata.missing_field~	2012-02-15 21:45:09.154454371 +0100
++++ rubygem-pam-1.5.3/metadata	2012-02-15 21:46:27.507538110 +0100
+@@ -22,11 +22,21 @@ required_ruby_version: !ruby/object:Gem:
+     - !ruby/object:Gem::Version 
+       version: 1.8.1
+   version: 
++required_rubygems_version: !ruby/object:Gem::Requirement 
++  requirements: 
++  - - ">="
++    - !ruby/object:Gem::Version 
++      version: "0"
++  version: 
+ platform: ruby
+ signing_key: 
+-cert_chain: 
++cert_chain: []
+ post_install_message: 
+-authors: []
++authors:
++- Takaaki Tateishi
++- Bryan Kearney
++
++licenses: []
+ 
+ files: 
+ - Rakefile
