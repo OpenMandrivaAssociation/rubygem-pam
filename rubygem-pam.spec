@@ -8,7 +8,7 @@ Version:	1.5.3
 Release:	2
 Group:		Development/Ruby
 License:	GPLv2+ or Ruby
-URL:		http://sourceforge.net/projects/ruby-pam
+URL:		https://sourceforge.net/projects/ruby-pam
 Source0:	http://rubygems.org/gems/%{rbname}-%{version}.gem
 Patch0:		pam-1.5.3-ruby1.9.patch
 Patch1:		pam-1.5.3-add-missing-tags-to-metadata.patch
